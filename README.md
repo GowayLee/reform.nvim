@@ -2,7 +2,7 @@
 
 A simple and lightweight Neovim plugin for formatting your code.
 
-This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-rt-format).
+This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-rt-format). 
 
 ## Features
 
@@ -20,6 +20,17 @@ This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-r
 ## Installation
 
 You can install `reform.nvim` using your favorite plugin manager.
+
+### vim-plug
+
+```lua
+local Plug = vim.fn['plug#']
+vim.call('plug#begin')
+
+Plug('gowaylee/reform.nvim')
+
+vim.call('plug#end')
+```
 
 ### lazy.nvim
 
