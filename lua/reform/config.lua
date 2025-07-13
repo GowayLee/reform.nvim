@@ -1,4 +1,4 @@
--- Configuration management for RTFormat
+-- Configuration management for Reform
 local M = {}
 
 -- Default configuration values

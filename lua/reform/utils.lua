@@ -1,16 +1,16 @@
--- Utility functions for RTFormat
+-- Utility functions for Reform
 local M = {}
 
 -- Display error message to user
 function M.error_msg(text)
   vim.cmd('redraw')
-  vim.api.nvim_echo({ { 'RTFormat ERROR: ' .. text, 'ErrorMsg' } }, true, {})
+  vim.api.nvim_echo({ { 'Reform ERROR: ' .. text, 'ErrorMsg' } }, true, {})
 end
 
 -- Display info message to user
 function M.info_msg(text, highlight)
   vim.cmd('redraw')
-  vim.api.nvim_echo({ { 'RTFormat: ' .. text, highlight or 'Todo' } }, true, {})
+  vim.api.nvim_echo({ { 'Reform: ' .. text, highlight or 'Todo' } }, true, {})
 end
 
 -- Extract indentation and body from line
@@ -114,7 +114,7 @@ end
 -- Debug logging (can be enabled/disabled via config)
 function M.debug_log(message)
   if vim.g.rtformat_debug then
-    vim.notify('RTFormat Debug: ' .. message, vim.log.levels.DEBUG)
+    vim.notify('Reform Debug: ' .. message, vim.log.levels.DEBUG)
   end
 end
 

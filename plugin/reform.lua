@@ -1,18 +1,18 @@
 -- ======================================================================
 --
--- neortformat.lua - Prettify current line on Enter for NeoVim !!
+-- reform.lua - Prettify current line on Enter for NeoVim !!
 --
 -- Modular Lua implementation for NeoVim with extensible formatter support
 --
 -- ======================================================================
 
 -- Load the main RTFormat module
-local rtformat = require('rtformat')
+local reform = require('reform')
 
--- Plugin is automatically initialized by the rtformat module
+-- Plugin is automatically initialized by the reform module
 -- Users can customize behavior with:
 --
--- require('rtformat').setup({
+-- require('reform').setup({
 --   ctrl_enter = false,
 --   on_insert_leave = true,
 --   auto_enable = false,
@@ -20,9 +20,9 @@ local rtformat = require('rtformat')
 -- })
 
 -- The module provides these main functions:
--- rtformat.enable()     - Enable for current buffer
--- rtformat.disable()    - Disable for current buffer
--- rtformat.status()     - Get current status
--- rtformat.add_filetype(ft, formatter) - Add support for new filetype
+-- reform.enable()     - Enable for current buffer
+-- reform.disable()    - Disable for current buffer
+-- reform.status()     - Get current status
+-- reform.add_filetype(ft, formatter) - Add support for new filetype
 
-return rtformat
+return reform

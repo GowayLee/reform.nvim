@@ -1,15 +1,15 @@
--- RTFormat main module
+-- Reform main module
 local M = {}
 
-local config = require('rtformat.config')
-local core = require('rtformat.core')
-local formatters = require('rtformat.formatters')
-local utils = require('rtformat.utils')
+local config = require('reform.config')
+local core = require('reform.core')
+local formatters = require('reform.formatters')
+local utils = require('reform.utils')
 
 -- Module version
 M.version = '0.1.0'
 
--- Setup RTFormat with user configuration
+-- Setup Reform with user configuration
 function M.setup(user_config)
   -- Initialize configuration
   config.setup(user_config)
@@ -17,15 +17,15 @@ function M.setup(user_config)
   -- Initialize core functionality
   core.setup()
 
-  utils.debug_log('RTFormat initialized with version ' .. M.version)
+  utils.debug_log('Reform initialized with version ' .. M.version)
 end
 
--- Enable RTFormat for current buffer
+-- Enable Reform for current buffer
 function M.enable()
   return core.enable()
 end
 
--- Disable RTFormat for current buffer
+-- Disable Reform for current buffer
 function M.disable()
   return core.disable()
 end
@@ -92,7 +92,7 @@ end
 function M.print_status()
   local status = M.status()
 
-  print('RTFormat Status:')
+  print('Reform Status:')
   print('  Version: ' .. status.version)
   print('  Filetype: ' .. status.filetype)
   print('  Enabled: ' .. tostring(status.enabled))

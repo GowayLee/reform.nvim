@@ -1,9 +1,9 @@
--- Core formatting logic for RTFormat
+-- Core formatting logic for Reform
 local M = {}
 
-local config = require('rtformat.config')
-local formatters = require('rtformat.formatters')
-local utils = require('rtformat.utils')
+local config = require('reform.config')
+local formatters = require('reform.formatters')
+local utils = require('reform.utils')
 
 -- Module state
 local state = {
@@ -66,11 +66,11 @@ function M.real_time_format_code()
     -- 6. Reset the flag.
     -- 7. Insert the newline.
     -- We use <Cmd> which is a cleaner Neovim way to run Ex commands from insert mode.
-    keys = keys .. '<Cmd>let b:rtformat_insert_leave=true<CR>'
+    keys = keys .. '<Cmd>let b:rtformat_insert_leave=1<CR>'
     keys = keys .. '<C-g>u<Esc>S'
     keys = keys .. '<Esc>i'
     keys = keys .. '<C-R>=b:rtformat_text<CR>'
-    keys = keys .. '<Cmd>let b:rtformat_insert_leave=false<CR>'
+    keys = keys .. '<Cmd>let b:rtformat_insert_leave=0<CR>'
     keys = keys .. '<CR>'
     return keys
   end
@@ -149,9 +149,9 @@ function M.enable()
   local key = config.get('ctrl_enter') and '<C-CR>' or '<CR>'
   state.enable_ctrl_enter = config.get('ctrl_enter')
 
-  utils.debug_log('Enabling RTFormat with key: ' .. key)
+  utils.debug_log('Enabling Reform with key: ' .. key)
 
-  -- Set up key mapping, for calling to rtformat
+  -- Set up key mapping, for calling to reform
   vim.keymap.set('i', key, M.real_time_format_code, {
     buffer = true,
     expr = true,

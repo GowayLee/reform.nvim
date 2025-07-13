@@ -1,7 +1,7 @@
 -- Formatter implementations for different languages
 local M           = {}
-local config      = require('rtformat.config')
-local utils       = require('rtformat.utils')
+local config      = require('reform.config')
+local utils       = require('reform.utils')
 
 -- PEP8 rules for Python formatting
 local pep8_rules  = {
@@ -163,7 +163,7 @@ function M.format(text, filetype)
 
   local available, err = formatter:is_available()
   if not available then
-    vim.notify('RTFormat: ' .. (err or 'Formatter not available'), vim.log.levels.WARN)
+    vim.notify('Reform: ' .. (err or 'Formatter not available'), vim.log.levels.WARN)
     return text
   end
 
