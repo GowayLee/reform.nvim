@@ -67,7 +67,7 @@ end
 -- Get status information
 function M.status()
   local ft = vim.bo.filetype
-  local enabled = utils.get_buf_var('rtf_enable', false)
+  local enabled = utils.get_buf_var('rtf_enable', 0)
   local is_auto_enable = config.should_auto_enable(ft)
   local formatter_available, formatter_error = formatters.is_available(ft)
 

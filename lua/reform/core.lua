@@ -43,25 +43,24 @@ function M.real_time_format_code()
       return '<CR>'
     end
 
-    -- Store formatted text in a buffer variable for the key mapping to use
+    -- Store formatted text in module state for the key mapping to use
     utils.set_buf_var('rtformat_text', formatted)
 
     local keys = ''
 
-    -- This sequence of keys is a translation of the original rtformat.vim logic
-    -- 1. Set a flag to prevent InsertLeave recursion.
-    -- 2. Create an undo point.
-    -- 3. Exit insert mode, Substitute line.
+    -- This sequence uses module-level state management
+    -- 1. Set a flag to prevent InsertLeave recursion via module state
+    -- 2. Create an undo point
+    -- 3. Exit insert mode, Substitute line
     -- 4. Exit again to make sure cursor at head of the line, insert
-    -- 5. Insert the formatted text from the buffer variable.
-    -- 6. Reset the flag.
-    -- 7. Insert the newline.
-    -- We use <Cmd> which is a cleaner Neovim way to run Ex commands from insert mode.
-    keys = keys .. '<Cmd>let b:rtformat_insert_leave=1<CR>'
+    -- 5. Insert the formatted text from module state
+    -- 6. Reset the flag
+    -- 7. Insert the newline
+    keys = keys .. '<Cmd>lua require("reform.utils").set_buf_var("rtformat_insert_leave", 1)<CR>'
     keys = keys .. '<C-g>u<Esc>S'
     keys = keys .. '<Esc>i'
-    keys = keys .. '<C-R>=b:rtformat_text<CR>'
-    keys = keys .. '<Cmd>let b:rtformat_insert_leave=0<CR>'
+    keys = keys .. '<C-R>=v:lua.require("reform.utils").get_buf_var("rtformat_text", "")<CR>'
+    keys = keys .. '<Cmd>lua require("reform.utils").set_buf_var("rtformat_insert_leave", 0)<CR>'
     keys = keys .. '<CR>'
     return keys
   end
@@ -72,7 +71,7 @@ end
 
 -- Handle InsertLeave event for additional formatting
 function M.on_insert_leave()
-  if utils.get_buf_var('rtformat_insert_leave', false) then
+  if utils.get_buf_var('rtformat_insert_leave', 0) == 1 then
     return
   end
 
@@ -94,7 +93,7 @@ function M.on_insert_leave()
 
   -- Handle multiline formatting result
   local formatted_line = head .. formatted_body
-  utils.set_buf_var('rtformat_insert_leave', true)
+  utils.set_buf_var('rtformat_insert_leave', 1)
 
   if formatted_body:find('\n') then
     utils.insert_multiline(formatted_body, true)
@@ -102,7 +101,7 @@ function M.on_insert_leave()
     vim.api.nvim_set_current_line(formatted_line)
   end
 
-  utils.set_buf_var('rtformat_insert_leave', false)
+  utils.set_buf_var('rtformat_insert_leave', 0)
 end
 
 -- Check if plugin can be enabled for current buffer
@@ -127,7 +126,7 @@ end
 -- Enable RT Format for current buffer
 function M.enable()
   -- Check is already enabled
-  if utils.get_buf_var('rtf_enable', false) then
+  if utils.get_buf_var('rtf_enable', 0) == 1 then
       utils.info_msg('is already running in current buffer')
       return false
   end
@@ -160,7 +159,7 @@ function M.enable()
     })
   end
 
-  utils.set_buf_var('rtf_enable', true)
+  utils.set_buf_var('rtf_enable', 1)
   utils.info_msg('is enabled in current buffer, exit with :RTFormatDisable')
 
   return true
@@ -176,11 +175,11 @@ function M.disable()
     -- Clear autocommands
     vim.api.nvim_clear_autocmds({ group = 'RTFormatGroup' })
 
-    utils.set_buf_var('rtf_enable', false)
+    utils.set_buf_var('rtf_enable', 0)
     utils.info_msg('is disabled in current buffer')
     return true
   end
-  utils.error_msg('is not runing in current buffer')
+  utils.error_msg('is not running in current buffer')
   return true
 end
 
@@ -221,7 +220,7 @@ function M.get_state()
   return {
     enable_ctrl_enter = state.enable_ctrl_enter,
     initialized = state.initialized,
-    buffer_enabled = utils.get_buf_var('rtf_enable', false)
+    buffer_enabled = utils.get_buf_var('rtf_enable', 0)
   }
 end
 
