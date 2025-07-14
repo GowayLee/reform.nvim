@@ -97,3 +97,47 @@ require("reform").setup({
 
 **This project is still under development, please use with caution**
 **Report any bugs or ideas you found in Issue :)**
+
+## Todo - Coming Soon ✨
+
+### 🚀 Mason Integration - Zero-Setup Formatting
+**No more manual formatter installation!** Soon you'll be able to:
+
+```lua
+-- Just enable Mason integration and forget about setup
+require("reform").setup({
+  mason_integration = {
+    enabled = true,
+    auto_install = true  -- Formatters install automatically when needed
+  }
+})
+```
+
+**What this means for you:**
+- **Open any file** - Python, JavaScript, Lua, C++, Rust, Go, etc.
+- **Start coding immediately** - Formatters install automatically in background
+- **Zero configuration** - Works with Mason's smart package detection
+- **Always up-to-date** - Formatters stay current with Mason updates
+
+**Supported formatters coming:**
+- Python: `black`, `autopep8`, `isort`
+- JavaScript/TypeScript: `prettier`, `eslint_d`
+- Lua: `stylua`
+- C/C++: `clang-format`
+- Rust: `rustfmt`
+- Go: `gofmt`, `goimports`
+- And many more...
+
+**Usage preview:**
+```lua
+-- Install specific formatter for current file
+:ReformInstallFormatter
+
+-- Install all formatters for your project
+:ReformInstallAll
+
+-- Check what's available
+:ReformStatus
+```
+
+See [docs/mason-integration-plan.md](docs/mason-integration-plan.md) for technical details.
