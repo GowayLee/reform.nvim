@@ -3,7 +3,7 @@ local M = {}
 
 -- Default configuration values
 local defaults = {
-  ctrl_enter = false,     -- Use CTRL+ENTER instead of ENTER
+  -- ctrl_enter = false,     -- Use CTRL+ENTER instead of ENTER
   on_insert_leave = true, -- Enable formatting when leaving insert mode
   auto_enable = {
     enabled = false,      -- Master switch for auto-enable
@@ -80,7 +80,7 @@ end
 
 -- Add support for new filetype
 function M.add_filetype(filetype, formatter)
-  M.config.supported_filetypes[filetype] = true
+  M.config.auto_enable.filetypes[filetype] = true -- FIXME: Add one more filed
   if formatter then
     M.config.formatters[filetype] = formatter
   end
@@ -92,4 +92,3 @@ function M.get_formatter(filetype)
 end
 
 return M
-

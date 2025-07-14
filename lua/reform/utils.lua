@@ -122,11 +122,6 @@ function M.create_augroup(name, clear)
   return vim.api.nvim_create_augroup(name, { clear = clear ~= false })
 end
 
--- Safe keymap deletion
-function M.safe_keymap_del(mode, key, opts)
-  pcall(vim.keymap.del, mode, key, opts or {})
-end
-
 -- Debug logging (can be enabled/disabled via config)
 function M.debug_log(message)
   if vim.g.rtformat_debug then

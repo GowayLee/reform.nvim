@@ -127,22 +127,22 @@ end
 function M.enable()
   -- Check is already enabled
   if utils.get_buf_var('rtf_enable', 0) == 1 then
-      utils.info_msg('is already running in current buffer')
-      return false
+    utils.info_msg('is already running in current buffer')
+    return false
   end
 
   if not M.check_enable() then
     return false
   end
 
-  local key = config.get('ctrl_enter') and '<C-CR>' or '<CR>'
-  state.enable_ctrl_enter = config.get('ctrl_enter')
+  -- local key = config.get('ctrl_enter') and '<C-CR>' or '<CR>'
+  -- state.enable_ctrl_enter = config.get('ctrl_enter')
 
-  utils.debug_log('Enabling Reform with key: ' .. key)
+  -- utils.debug_log('Enabling Reform with key: ' .. key)
 
   -- Set up key mapping, for calling to reform
-  vim.keymap.set('i', key, M.real_time_format_code, {
-    buffer = true,
+  vim.keymap.set('i', '<CR>', M.real_time_format_code, {
+    buffer = 0,
     expr = true,
     silent = true,
     desc = 'RT Format: Real-time code formatting'
@@ -167,10 +167,16 @@ end
 
 -- Disable RT Format for current buffer
 function M.disable()
-  if utils.get_buf_var('rtf_enable', false) then
-    local key = state.enable_ctrl_enter and '<C-CR>' or '<CR>'
-    utils.safe_keymap_del('i', key, { buffer = true })
-    utils.debug_log('Disabled RTFormat key mapping: ' .. key)
+  if utils.get_buf_var('rtf_enable', 0) == 1 then
+    -- local key = state.enable_ctrl_enter and '<C-CR>' or '<CR>'
+    -- utils.safe_keymap_del('i', '<CR>', { buffer = true })
+
+    -- delete keymapping
+    vim.keymap.del('i', '<CR>', { buffer = 0 })
+    -- reset <CR> to ensure disable
+    vim.keymap.set('i', '<CR>', '<CR>', { buffer = 0, expr = false })
+
+    utils.debug_log('Disabled RTFormat key mapping: <CR>')
 
     -- Clear autocommands
     vim.api.nvim_clear_autocmds({ group = 'RTFormatGroup' })
