@@ -45,13 +45,55 @@ vim.call('plug#end')
 }
 ```
 
+## Configuration
+
+The plugin can be configured by passing a table to the `setup` function. Here are the available configuration options:
+
+### Core Configuration Options
+
+- **on_insert_leave** (boolean, default: `true`): Enable formatting when leaving insert mode.
+- **auto_enable** (table): Configuration for auto-enabling formatting on specific file types.
+  - **enabled** (boolean, default: `false`): Master switch for auto-enabling formatting.
+  - **filetypes** (table): List of file types to auto-enable formatting for.
+  - **exclude_filetypes** (table): List of file types to exclude from auto-enable.
+- **formatters** (table): Mapping of file types to their respective formatters.
+- **debug** (boolean, default: `false`): Enable debug information for troubleshooting.
+
+### Configuration Example
+
+```lua
+require("reform").setup({
+  on_insert_leave = true,
+  auto_enable = {
+    enabled = false,
+    filetypes = {
+      'python',
+      'lua',
+      'java',
+      'javascript',
+      'json',
+      'actionscript',
+      'ruby',
+      'c',
+      'cpp'
+    },
+    exclude_filetypes = {}
+  },
+  formatters = {
+    python = 'autopep8',
+    c = 'clang-format',
+    cpp = 'clang-format'
+  },
+  debug = false
+})
+```
+
 ## Supported Formatters
 
 `reform.nvim` currently supports the following formatters:
 
-- `sutopep8` from Python3, for Python, Lua, Java, JavaScrip, Json, actionscript, Ruby.
-- `clang-format` for C family.
-
+- `autopep8` from Python3, for Python, Lua, Java, JavaScript, JSON, ActionScript, Ruby.
+- `clang-format` for C family (C, C++).
 
 **This project is still under development, please use with caution**
 **Report any bugs or ideas you found in Issue :)**
