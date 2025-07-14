@@ -53,11 +53,6 @@ function M.get_config()
   return config.config
 end
 
--- Check if filetype is supported
-function M.is_supported(filetype)
-  return config.is_supported_filetype(filetype)
-end
-
 -- Check formatter availability
 function M.check_formatter(filetype)
   return formatters.is_available(filetype)
@@ -73,14 +68,14 @@ end
 function M.status()
   local ft = vim.bo.filetype
   local enabled = utils.get_buf_var('rtf_enable', false)
-  local supported = config.is_supported_filetype(ft)
+  local is_auto_enable = config.should_auto_enable(ft)
   local formatter_available, formatter_error = formatters.is_available(ft)
 
   return {
     version = M.version,
     filetype = ft,
     enabled = enabled,
-    supported = supported,
+    is_auto_enable = is_auto_enable,
     formatter_available = formatter_available,
     formatter_error = formatter_error,
     config = config.config,
@@ -110,13 +105,26 @@ M.BaseFormatter = formatters.BaseFormatter
 -- Export utilities for custom formatters
 M.utils = utils
 
--- Default setup with backwards compatibility
+-- Default setup
 local function default_setup()
   M.setup({
-    -- Keep existing global variable behavior
     ctrl_enter = vim.g.rtf_ctrl_enter == 1,
     on_insert_leave = vim.g.rtf_on_insert_leave ~= 0,
-    auto_enable = vim.g.rtformat_auto == 1
+    auto_enable = {
+      enabled = vim.g.rtformat_auto == 1,
+      filetypes = {
+        'python',
+        'lua',
+        'java',
+        'javascript',
+        'json',
+        'actionscript',
+        'ruby',
+        'c',
+        'cpp'
+      },
+      exclude_filetypes = {}
+    }
   })
 end
 

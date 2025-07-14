@@ -158,12 +158,7 @@ end
 function M.format(text, filetype)
   local formatter = M.get_formatter(filetype)
   if not formatter then
-    return text
-  end
-
-  local available, err = formatter:is_available()
-  if not available then
-    vim.notify('Reform: ' .. (err or 'Formatter not available'), vim.log.levels.WARN)
+    vim.notify('Reform: Formatter not available', vim.log.levels.WARN)
     return text
   end
 

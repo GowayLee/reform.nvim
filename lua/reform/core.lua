@@ -17,11 +17,6 @@ function M.format_line(text, filetype)
     return text
   end
 
-  -- Check if filetype is supported
-  if not config.is_supported_filetype(filetype) then
-    return text
-  end
-
   local head, body = utils.parse_line(text)
   if body == '' then
     return text
@@ -52,7 +47,7 @@ function M.real_time_format_code()
     utils.set_buf_var('rtformat_text', formatted)
 
     local keys = ''
-    if utils.completion_visible() then
+    if utils.completion_visible() then -- FIXME: optimize completion behavior
       -- If completion menu is visible, accept the selection
       keys = keys .. '<C-y>'
     end
@@ -123,17 +118,16 @@ end
 -- Check if plugin can be enabled for current buffer
 function M.check_enable()
   local filetype = vim.bo.filetype
-  local is_valid, error_msg = utils.validate_filetype(filetype, config.get('supported_filetypes'))
 
-  if not is_valid then
-    utils.error_msg(error_msg)
+  if not filetype or filetype == '' then
+    utils.error_msg('No filetype detected')
     return false
   end
 
   -- Check if formatter is available
   local available, err = formatters.is_available(filetype)
   if not available then
-    utils.error_msg(err or 'Formatter not available for ' .. filetype)
+    utils.error_msg(err or ('Formatter not available for ' .. filetype))
     return false
   end
 
@@ -142,6 +136,11 @@ end
 
 -- Enable RT Format for current buffer
 function M.enable()
+  -- Check is already enabled
+  if utils.get_buf_var('rtf_enable', false) then
+      return false
+  end
+
   if not M.check_enable() then
     return false
   end
