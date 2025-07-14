@@ -105,33 +105,4 @@ M.BaseFormatter = formatters.BaseFormatter
 -- Export utilities for custom formatters
 M.utils = utils
 
--- Default setup
-local function default_setup()
-  M.setup({
-    ctrl_enter = vim.g.rtf_ctrl_enter == 1,
-    on_insert_leave = vim.g.rtf_on_insert_leave ~= 0,
-    auto_enable = {
-      enabled = vim.g.rtformat_auto == 1,
-      filetypes = {
-        'python',
-        'lua',
-        'java',
-        'javascript',
-        'json',
-        'actionscript',
-        'ruby',
-        'c',
-        'cpp'
-      },
-      exclude_filetypes = {}
-    }
-  })
-end
-
--- Initialize with defaults if not explicitly setup
-if not vim.g.rtformat_initialized then
-  default_setup()
-  vim.g.rtformat_initialized = true
-end
-
 return M

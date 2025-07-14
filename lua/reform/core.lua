@@ -204,17 +204,40 @@ function M.setup()
     desc = 'Disable RT Format for current buffer'
   })
 
-  -- Auto-enable for supported files if configured
-  if config.get('auto_enable') then
+  -- Auto-enable for configured filetypes
+  if config.get('auto_enable').enabled then
     local auto_group = utils.create_augroup('RTFormatAuto', true)
-    vim.api.nvim_create_autocmd('FileType', {
-      group = auto_group,
-      pattern = config.get('supported_filetypes'),
-      callback = function()
-        vim.schedule(M.enable)
-      end,
-      desc = 'RT Format: Auto-enable for supported filetypes'
-    })
+
+    -- Use multiple events for better coverage
+    local events = { 'FileType' }
+    for _, event in ipairs(events) do
+      vim.api.nvim_create_autocmd(event, {
+        group = auto_group,
+        callback = function(args)
+          local filetype = vim.bo[args.buf].filetype
+          if not config.should_auto_enable(filetype) then
+            goto continue
+          end
+          -- Check if formatter is available before auto-enabling
+          local available, err = formatters.is_available(filetype)
+          if not available then
+            utils.debug_log('Skipping auto-enable for ' .. filetype .. ': ' .. (err or 'formatter not available'))
+            goto continue
+          end
+          vim.schedule(function()
+            -- Check if not already enabled for this buffer
+            if utils.get_buf_var('rtf_enable', 0) ~= 1 then
+              local success = M.enable()
+              if not success then
+                utils.debug_log('Failed to auto-enable for ' .. filetype)
+              end
+            end
+          end)
+          ::continue::
+        end,
+        desc = 'RT Format: Auto-enable for configured filetypes'
+      })
+    end
   end
 
   state.initialized = true
