@@ -124,14 +124,14 @@ end
 
 -- Debug logging (can be enabled/disabled via config)
 function M.debug_log(message)
-  if vim.g.rtformat_debug then
+  if vim.g.reform_debug then
     vim.notify('Reform Debug: ' .. message, vim.log.levels.DEBUG)
   end
 end
 
 -- Performance timing for debugging
 function M.time_function(name, func, ...)
-  if not vim.g.rtformat_debug then
+  if not vim.g.reform_debug then
     return func(...)
   end
 

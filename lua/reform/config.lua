@@ -25,7 +25,8 @@ local defaults = {
     python = 'autopep8',
     c = 'clang-format',
     cpp = 'clang-format'
-  }
+  },
+  debug = false -- Enable debug info
 }
 
 -- Current configuration state
@@ -36,9 +37,7 @@ function M.setup(user_config)
   -- Merge defaults with user config
   M.config = vim.tbl_deep_extend('force', defaults, user_config)
 
-  -- Override with vim global variables if they exist
-  -- M.config.ctrl_enter = vim.g.rtf_ctrl_enter == 1
-  -- M.config.on_insert_leave = vim.g.rtf_on_insert_leave ~= 0
+  vim.g.reform_debug = M.config.debug == true
 
   -- Convert supported_filetypes array to lookup table for performance
   local ft_lookup = {}

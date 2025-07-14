@@ -13,10 +13,20 @@ local reform = require('reform')
 -- Users can customize behavior with:
 --
 -- require('reform').setup({
---   ctrl_enter = false,
---   on_insert_leave = true,
---   auto_enable = false,
---   supported_filetypes = { 'python', 'lua', 'c', 'cpp', 'javascript' }
+--   on_insert_leave = true,           -- Enable formatting when leaving insert mode
+--   auto_enable = {
+--     enabled = false,                -- Master switch for auto-enable
+--     filetypes = {                   -- Filetypes to auto-enable
+--       'python', 'lua', 'java', 'javascript', 'json', 'actionscript', 'ruby', 'c', 'cpp'
+--     },
+--     exclude_filetypes = {}          -- Filetypes to exclude from auto-enable
+--   },
+--   formatters = {                    -- Formatters for each language
+--     python = 'autopep8',
+--     c = 'clang-format',
+--     cpp = 'clang-format'
+--   },
+--   debug = false                     -- Enable debug info
 -- })
 
 -- The module provides these main functions:
