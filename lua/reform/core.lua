@@ -128,6 +128,7 @@ end
 function M.enable()
   -- Check is already enabled
   if utils.get_buf_var('rtf_enable', false) then
+      utils.info_msg('is already running in current buffer')
       return false
   end
 
@@ -174,11 +175,12 @@ function M.disable()
 
     -- Clear autocommands
     vim.api.nvim_clear_autocmds({ group = 'RTFormatGroup' })
+
+    utils.set_buf_var('rtf_enable', false)
+    utils.info_msg('is disabled in current buffer')
+    return true
   end
-
-  utils.set_buf_var('rtf_enable', false)
-  utils.info_msg('is disabled in current buffer')
-
+  utils.error_msg('is not runing in current buffer')
   return true
 end
 
