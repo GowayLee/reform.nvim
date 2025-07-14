@@ -47,10 +47,6 @@ function M.real_time_format_code()
     utils.set_buf_var('rtformat_text', formatted)
 
     local keys = ''
-    if utils.completion_visible() then -- FIXME: optimize completion behavior
-      -- If completion menu is visible, accept the selection
-      keys = keys .. '<C-y>'
-    end
 
     -- This sequence of keys is a translation of the original rtformat.vim logic
     -- 1. Set a flag to prevent InsertLeave recursion.
@@ -71,13 +67,7 @@ function M.real_time_format_code()
   end
 
   -- Normal ENTER behavior
-  local keys = ''
-  if utils.completion_visible() then
-    keys = keys .. '<C-y>'
-  end
-  keys = keys .. '<CR>'
-
-  return keys
+  return '<CR>'
 end
 
 -- Handle InsertLeave event for additional formatting
