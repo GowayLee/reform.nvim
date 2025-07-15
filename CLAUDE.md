@@ -87,3 +87,4 @@ reform.nvim/
 - Add appropriate error handling and user feedback.
 - Test changes with both Python and C++ formatters.
 - Ensure all public API functions are documented.
+- Remember to include explicit type annotations for lua programming.
