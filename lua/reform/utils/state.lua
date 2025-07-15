@@ -36,12 +36,11 @@ function M.get_global_var(name, default)
 end
 
 -- Clean up buffer state when buffers are deleted
-vim.api.nvim_create_autocmd('BufDelete', {
+vim.api.nvim_create_autocmd("BufDelete", {
   callback = function(args)
     buffer_state[args.buf] = nil
   end,
-  group = vim.api.nvim_create_augroup('ReformBufferCleanup', { clear = true })
+  group = vim.api.nvim_create_augroup("ReformBufferCleanup", { clear = true }),
 })
 
 return M
-

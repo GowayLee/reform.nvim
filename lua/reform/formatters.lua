@@ -1,26 +1,26 @@
 -- Formatter implementations for different languages
-local M               = {}
-local config          = require('reform.config')
-local utils           = require('reform.utils')
+local M = {}
+local config = require("reform.config")
+local utils = require("reform.utils")
 
 -- Import formatter classes
-local BaseFormatter   = require('reform.formatters.base')
-local PythonFormatter = require('reform.formatters.python')
-local ClangFormatter  = require('reform.formatters.clang')
+local BaseFormatter = require("reform.formatters.base")
+local PythonFormatter = require("reform.formatters.python")
+local ClangFormatter = require("reform.formatters.clang")
 
 -- Formatter registry
-local formatters      = {
+local formatters = {
   python = PythonFormatter:new(),
   c = ClangFormatter:new(),
   cpp = ClangFormatter:new(),
-  ['c++'] = ClangFormatter:new(),
+  ["c++"] = ClangFormatter:new(),
   -- Legacy support - use Python formatter for other languages
   lua = PythonFormatter:new(),
   java = PythonFormatter:new(),
   javascript = PythonFormatter:new(),
   json = PythonFormatter:new(),
   actionscript = PythonFormatter:new(),
-  ruby = PythonFormatter:new()
+  ruby = PythonFormatter:new(),
 }
 
 -- Get formatter for filetype
@@ -37,7 +37,7 @@ end
 function M.format(text, filetype)
   local formatter = M.get_formatter(filetype)
   if not formatter then
-    vim.notify('Reform: Formatter not available', vim.log.levels.WARN)
+    vim.notify("Reform: Formatter not available", vim.log.levels.WARN)
     return text
   end
 
@@ -48,7 +48,7 @@ end
 function M.is_available(filetype)
   local formatter = M.get_formatter(filetype)
   if not formatter then
-    return false, 'No formatter registered for ' .. filetype
+    return false, "No formatter registered for " .. filetype
   end
 
   return formatter:is_available()

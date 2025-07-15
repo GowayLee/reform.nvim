@@ -6,27 +6,27 @@ local defaults = {
   -- ctrl_enter = false,     -- Use CTRL+ENTER instead of ENTER
   on_insert_leave = true, -- Enable formatting when leaving insert mode
   auto_enable = {
-    enabled = false,      -- Master switch for auto-enable
-    filetypes = {         -- Filetypes to auto-enable
-      'python',
-      'lua',
-      'java',
-      'javascript',
-      'json',
-      'actionscript',
-      'ruby',
-      'c',
-      'cpp'
+    enabled = false, -- Master switch for auto-enable
+    filetypes = { -- Filetypes to auto-enable
+      "python",
+      "lua",
+      "java",
+      "javascript",
+      "json",
+      "actionscript",
+      "ruby",
+      "c",
+      "cpp",
     },
-    exclude_filetypes = {} -- Filetypes to exclude from auto-enable
+    exclude_filetypes = {}, -- Filetypes to exclude from auto-enable
   },
   -- Formatters for each language
   formatters = {
-    python = 'autopep8',
-    c = 'clang-format',
-    cpp = 'clang-format'
+    python = "autopep8",
+    c = "clang-format",
+    cpp = "clang-format",
   },
-  debug = false -- Enable debug info
+  debug = false, -- Enable debug info
 }
 
 -- Current configuration state
@@ -35,7 +35,7 @@ M.config = {}
 -- Initialize configuration from vim global variables
 function M.setup(user_config)
   -- Merge defaults with user config
-  M.config = vim.tbl_deep_extend('force', defaults, user_config)
+  M.config = vim.tbl_deep_extend("force", defaults, user_config)
 
   vim.g.reform_debug = M.config.debug == true
 
@@ -59,7 +59,7 @@ end
 
 -- Check if filetype should be auto-enabled
 function M.should_auto_enable(filetype)
-  if not filetype or filetype == '' then
+  if not filetype or filetype == "" then
     return false
   end
 

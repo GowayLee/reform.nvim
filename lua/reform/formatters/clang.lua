@@ -1,4 +1,4 @@
-local BaseFormatter = require('reform.formatters.base')
+local BaseFormatter = require("reform.formatters.base")
 
 ---@class ClangFormatter : BaseFormatter
 local ClangFormatter = setmetatable({}, { __index = BaseFormatter })
@@ -15,9 +15,9 @@ end
 ---@return boolean
 ---@return string|nil error_message
 function ClangFormatter:is_available()
-  local result = vim.fn.executable('clang-format')
+  local result = vim.fn.executable("clang-format")
   if result == 0 then
-    return false, 'clang-format not found in PATH'
+    return false, "clang-format not found in PATH"
   end
   return true
 end
@@ -27,19 +27,19 @@ end
 ---@param filetype string|nil The filetype of the text
 ---@return string The formatted text
 function ClangFormatter:format(text, filetype)
-  if text == '' then
+  if text == "" then
     return text
   end
 
   -- Use clang-format for single line formatting
   local lang_map = {
-    c = 'c',
-    cpp = 'cpp',
-    ['c++'] = 'cpp'
+    c = "c",
+    cpp = "cpp",
+    ["c++"] = "cpp",
   }
 
-  local lang = lang_map[filetype] or 'cpp'
-  local cmd = string.format('clang-format --assume-filename=temp.%s', lang)
+  local lang = lang_map[filetype] or "cpp"
+  local cmd = string.format("clang-format --assume-filename=temp.%s", lang)
 
   local result = vim.fn.system(cmd, text)
   if vim.v.shell_error == 0 then
@@ -50,4 +50,3 @@ function ClangFormatter:format(text, filetype)
 end
 
 return ClangFormatter
-

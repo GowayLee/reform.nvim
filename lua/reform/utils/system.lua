@@ -19,7 +19,7 @@ end
 ---@return T The deep copied value
 function M.deep_copy(original)
   local copy
-  if type(original) == 'table' then
+  if type(original) == "table" then
     copy = {}
     for key, value in next, original, nil do
       copy[M.deep_copy(key)] = M.deep_copy(value)

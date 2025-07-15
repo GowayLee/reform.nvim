@@ -7,7 +7,7 @@
 -- ======================================================================
 
 -- Load the main RTFormat module
-local reform = require('reform')
+local reform = require("reform")
 
 -- Plugin is automatically initialized by the reform module
 -- Users can customize behavior with:

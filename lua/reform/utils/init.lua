@@ -4,13 +4,13 @@
 local M = {}
 
 -- Import all utility modules
-local log = require('reform.utils.log')
-local text = require('reform.utils.text')
-local buffer = require('reform.utils.buffer')
-local state = require('reform.utils.state')
-local autocmd = require('reform.utils.autocmd')
-local validation = require('reform.utils.validation')
-local system = require('reform.utils.system')
+local log = require("reform.utils.log")
+local text = require("reform.utils.text")
+local buffer = require("reform.utils.buffer")
+local state = require("reform.utils.state")
+local autocmd = require("reform.utils.autocmd")
+local validation = require("reform.utils.validation")
+local system = require("reform.utils.system")
 
 -- Re-export all functions for backward compatibility
 -- Messaging and logging
@@ -46,4 +46,3 @@ M.get_mode = system.get_mode
 M.deep_copy = system.deep_copy
 
 return M
-
