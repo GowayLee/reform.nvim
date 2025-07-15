@@ -15,6 +15,8 @@ reform.nvim/
 ├── GEMINI.md
 ├── LICENSE
 ├── README.md
+├── docs/
+│   └── formatter-configuration.md
 ├── lua/
 │   └── reform/
 │       ├── config.lua
@@ -25,11 +27,18 @@ reform.nvim/
 │       │   ├── clang.lua
 │       │   └── python.lua
 │       ├── init.lua
-│       └── utils.lua
-├── plugin/
-│   └── reform.lua
-├── test.cpp
-└── test.py
+│       ├── utils.lua
+│       └── utils/
+│           ├── autocmd.lua
+│           ├── buffer.lua
+│           ├── init.lua
+│           ├── log.lua
+│           ├── state.lua
+│           ├── system.lua
+│           ├── text.lua
+│           └── validation.lua
+└── plugin/
+    └── reform.lua
 ```
 
 -   `.gitignore`: Specifies intentionally untracked files to ignore.
@@ -37,11 +46,11 @@ reform.nvim/
 -   `GEMINI.md`: Legacy project overview document.
 -   `LICENSE`: The license under which the project is distributed.
 -   `README.md`: General information about the project, features, requirements, and installation instructions.
+-   `docs/`: Documentation files for configuration and usage.
 -   `lua/reform/`: Contains the core Lua modules for the plugin.
 -   `formatters/`: Directory containing individual formatter implementations.
+-   `utils/`: Modularized utility functions for better code organization.
 -   `plugin/reform.lua`: The main entry point for the Neovim plugin, which loads the `reform` module.
--   `test.cpp`: Test file for C++ formatting.
--   `test.py`: Test file for Python formatting.
 
 ## 3. Lua Modules
 
@@ -75,16 +84,25 @@ reform.nvim/
     -   **Purpose**: C/C++ formatter implementation using `clang-format`.
 
 -   `lua/reform/utils.lua`:
-    -   **Purpose**: Provides a collection of utility functions used across the plugin for common tasks like message display, string manipulation, Neovim API interactions, and debugging.
-    -   **Key Functions**: `error_msg`, `info_msg`, `parse_line`, `at_line_end`, `execute_keys`, `insert_multiline`, `completion_visible`, `get_mode`, `get_buf_var`, `set_buf_var`, `get_global_var`, `validate_filetype`, `create_augroup`, `safe_keymap_del`, `debug_log`, `time_function`, `deep_copy`, `trim`, `is_whitespace`.
+    -   **Purpose**: Legacy utilities module (being refactored into modular components).
     -   **Dependencies**: `vim` (Neovim API).
+
+-   `lua/reform/utils/`:
+    -   **Purpose**: Modularized utility functions organized by functionality.
+    -   **Key modules**:
+        -   `autocmd.lua`: Autocommand management utilities
+        -   `buffer.lua`: Buffer manipulation and state management
+        -   `init.lua`: Main utilities entry point
+        -   `log.lua`: Logging and debugging utilities
+        -   `state.lua`: Plugin state management
+        -   `system.lua`: System-level utilities and commands
+        -   `text.lua`: Text processing and manipulation
+        -   `validation.lua`: Input validation and type checking
 
 ## 4. Development Guidelines
 
-- When working with lua, Claude needs to maintain well-defined type annotations of lua.
+- When working with lua, Claude needs to maintain well-defined type annotations
 - Follow existing code style and conventions.
 - Use descriptive variable names and function names.
 - Add appropriate error handling and user feedback.
-- Test changes with both Python and C++ formatters.
 - Ensure all public API functions are documented.
-- Remember to include explicit type annotations for lua programming.
