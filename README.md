@@ -100,44 +100,50 @@ require("reform").setup({
 
 ## Todo - Coming Soon ✨
 
-### 🚀 Mason Integration - Zero-Setup Formatting
-**No more manual formatter installation!** Soon you'll be able to:
+### 🚀 Configurable Formatter Paths - Use Any Formatter
+**Use formatters from Mason, system PATH, or custom locations!** Soon you'll be able to:
 
 ```lua
--- Just enable Mason integration and forget about setup
+-- Configure formatter paths and language mappings
 require("reform").setup({
-  mason_integration = {
-    enabled = true,
-    auto_install = true  -- Formatters install automatically when needed
+  formatters = {
+    paths = {
+      -- "" = disabled, "PATH" = system PATH, "/path" = custom
+      ["ruff"] = vim.fn.stdpath("data") .. "/mason/bin/ruff",
+      ["black"] = "PATH",
+      ["clang-format"] = "/opt/llvm/bin/clang-format",
+      ["prettier"] = "",
+      ["stylua"] = vim.fn.stdpath("data") .. "/mason/bin/stylua"
+    },
+    languages = {
+      python = "ruff",        -- Use ruff for Python
+      c = "clang-format",     -- Use clang-format for C/C++
+      javascript = "prettier" -- Use prettier for JS
+    }
   }
 })
 ```
 
 **What this means for you:**
-- **Open any file** - Python, JavaScript, Lua, C++, Rust, Go, etc.
-- **Start coding immediately** - Formatters install automatically in background
-- **Zero configuration** - Works with Mason's smart package detection
-- **Always up-to-date** - Formatters stay current with Mason updates
+- **Use Mason formatters** - Just point to Mason's bin directory
+- **Use system formatters** - Works with PATH automatically
+- **Use custom builds** - Point to any executable path
+- **Disable unwanted formatters** - Set path to empty string
+- **Zero breaking changes** - Existing setup continues working
 
 **Supported formatters coming:**
-- Python: `black`, `autopep8`, `isort`
-- JavaScript/TypeScript: `prettier`, `eslint_d`
-- Lua: `stylua`
+- Python: `ruff`, `black`, `autopep8`
 - C/C++: `clang-format`
-- Rust: `rustfmt`
-- Go: `gofmt`, `goimports`
-- And many more...
+- JavaScript/TypeScript: `prettier`
+- Lua: `stylua`
 
 **Usage preview:**
 ```lua
--- Install specific formatter for current file
-:ReformInstallFormatter
-
--- Install all formatters for your project
-:ReformInstallAll
-
--- Check what's available
+-- Check formatter availability
 :ReformStatus
+
+-- Auto-detect Mason installations
+:ReformDetectFormatters
 ```
 
-See [docs/mason-integration-plan.md](docs/mason-integration-plan.md) for technical details.
+See [docs/formatter-configuration.md](docs/formatter-configuration.md) for complete configuration guide.
