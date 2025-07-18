@@ -3,7 +3,15 @@ local M = {}
 
 local config = require("reform.config")
 local formatters = require("reform.formatters")
-local utils = require("reform.utils")
+
+-- Lazy-loaded utils module
+local utils = nil
+local function get_utils()
+  if not utils then
+    utils = require("reform.utils")
+  end
+  return utils
+end
 
 -- Module state
 local state = {
@@ -17,6 +25,7 @@ function M.format_line(text, filetype)
     return text
   end
 
+  local utils = get_utils()
   local head, body = utils.parse_line(text)
   if body == "" then
     return text
@@ -33,6 +42,7 @@ end
 -- Main formatting function triggered by ENTER
 function M.real_time_format_code()
   local filetype = vim.bo.filetype
+  local utils = get_utils()
 
   -- Check if we're at the end of a non-empty line
   if utils.at_line_end() then
@@ -71,6 +81,7 @@ end
 
 -- Handle InsertLeave event for additional formatting
 function M.on_insert_leave()
+  local utils = get_utils()
   if utils.get_buf_var("rtformat_insert_leave", 0) == 1 then
     return
   end
@@ -106,6 +117,7 @@ end
 
 -- Check if plugin can be enabled for current buffer
 function M.check_enable()
+  local utils = get_utils()
   local filetype = vim.bo.filetype
 
   if not filetype or filetype == "" then
@@ -125,6 +137,7 @@ end
 
 -- Enable RT Format for current buffer
 function M.enable()
+  local utils = get_utils()
   -- Check is already enabled
   if utils.get_buf_var("rtf_enable", 0) == 1 then
     utils.info_msg("is already running in current buffer")
@@ -167,6 +180,7 @@ end
 
 -- Disable RT Format for current buffer
 function M.disable()
+  local utils = get_utils()
   if utils.get_buf_var("rtf_enable", 0) == 1 then
     -- local key = state.enable_ctrl_enter and '<C-CR>' or '<CR>'
     -- utils.safe_keymap_del('i', '<CR>', { buffer = true })
@@ -194,6 +208,8 @@ function M.setup()
   if state.initialized then
     return
   end
+
+  local utils = get_utils()
 
   -- Create user commands
   vim.api.nvim_create_user_command("RTFormatEnable", M.enable, {
@@ -246,6 +262,7 @@ end
 
 -- Get current state for debugging
 function M.get_state()
+  local utils = get_utils()
   return {
     enable_ctrl_enter = state.enable_ctrl_enter,
     initialized = state.initialized,

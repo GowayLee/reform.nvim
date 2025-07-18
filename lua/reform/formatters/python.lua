@@ -36,6 +36,7 @@ vim.list_extend(pep8_python, { "E26", "E265", "E266", "E", "W" })
 
 ---@class PythonFormatter : BaseFormatter
 ---@field py_version boolean|nil
+---@field _availability_cache table|nil
 local PythonFormatter = setmetatable({}, { __index = BaseFormatter })
 PythonFormatter.__index = PythonFormatter
 
@@ -43,18 +44,29 @@ PythonFormatter.__index = PythonFormatter
 ---@return PythonFormatter
 function PythonFormatter:new()
   local instance = setmetatable({}, self)
+  instance._availability_cache = nil
   if vim.fn.has("python3") == 1 then
-    self.py_version = true
+    instance.py_version = true
   end
   return instance
 end
 
---- Check if the Python formatter is available
+--- Check if the Python formatter is available (with caching)
 ---@return boolean
 ---@return string|nil error_message
 function PythonFormatter:is_available()
+  -- Return cached result if available
+  if self._availability_cache ~= nil then
+    return self._availability_cache.result, self._availability_cache.error
+  end
+
+  -- Cache the result
+  self._availability_cache = {}
+
   if not self.py_version then
-    return false, "require +python3 feature"
+    self._availability_cache.result = false
+    self._availability_cache.error = "require +python3 feature"
+    return self._availability_cache.result, self._availability_cache.error
   end
 
   local code = [[
@@ -68,10 +80,14 @@ except ImportError:
 
   local success, result = pcall(vim.fn.py3eval, 'exec("""' .. code .. '""") or __i')
   if not success or result == 0 then
-    return false, "require python module autopep8"
+    self._availability_cache.result = false
+    self._availability_cache.error = "require python module autopep8"
+    return self._availability_cache.result, self._availability_cache.error
   end
 
-  return true
+  self._availability_cache.result = true
+  self._availability_cache.error = nil
+  return self._availability_cache.result, self._availability_cache.error
 end
 
 --- Format Python code using autopep8
