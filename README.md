@@ -17,6 +17,7 @@ This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-r
 - Nvim with "+python3" feature
 - Python module "autopep8"
 - A `clang-format` executable installed
+- `stylua` executable for Lua formatting
 
 ## Installation
 
@@ -83,7 +84,8 @@ require("reform").setup({
   formatters = {
     python = 'autopep8',
     c = 'clang-format',
-    cpp = 'clang-format'
+    cpp = 'clang-format',
+    lua = 'stylua'
   },
   debug = false
 })
@@ -104,8 +106,9 @@ This makes reform.nvim ideal for lazy loading configurations with plugin manager
 
 `reform.nvim` currently supports the following formatters:
 
-- `autopep8` from Python3, for Python, Lua, Java, JavaScript, JSON, ActionScript, Ruby.
+- `autopep8` from Python3, for Python, Java, JavaScript, JSON, ActionScript, Ruby.
 - `clang-format` for C family (C, C++).
+- `stylua` for Lua files.
 
 **This project is still under development, please use with caution**
 **Report any bugs or ideas you found in Issue :)**
