@@ -7,7 +7,7 @@ local formatters = require("reform.formatters")
 local utils = require("reform.utils")
 
 -- Module version
-M.version = "0.1.0"
+M.version = "0.1.1"
 
 -- Setup Reform with user configuration
 function M.setup(user_config)
