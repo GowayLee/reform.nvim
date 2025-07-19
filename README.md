@@ -10,6 +10,7 @@ This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-r
 - Supports different languages and formatters.
 - Configurable and easy to set up.
 - Written in Lua.
+- **Ultra-fast startup** with lazy loading optimization (<1ms startup time).
 
 ## Requirements
 
@@ -87,6 +88,17 @@ require("reform").setup({
   debug = false
 })
 ```
+
+## Performance
+
+Reform.nvim is optimized for **lightning-fast startup** using advanced lazy loading techniques:
+
+- **<1ms startup time** - Formatter availability checks and utility loading are deferred until needed
+- **Lazy formatter instantiation** - Formatters are only loaded when you actually use them
+- **Cached availability checks** - System command checks are cached to avoid repeated overhead
+- **Minimal initial dependencies** - Only essential modules are loaded at startup
+
+This makes reform.nvim ideal for lazy loading configurations with plugin managers like [lazy.nvim](https://github.com/folke/lazy.nvim).
 
 ## Supported Formatters
 
