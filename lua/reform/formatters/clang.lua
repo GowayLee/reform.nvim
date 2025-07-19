@@ -1,6 +1,7 @@
 local BaseFormatter = require("reform.formatters.base")
 
 ---@class ClangFormatter : BaseFormatter
+---@field _availability_cache table|nil
 local ClangFormatter = setmetatable({}, { __index = BaseFormatter })
 ClangFormatter.__index = ClangFormatter
 
@@ -8,18 +9,32 @@ ClangFormatter.__index = ClangFormatter
 ---@return ClangFormatter
 function ClangFormatter:new()
   local instance = setmetatable({}, self)
+  instance._availability_cache = nil
   return instance
 end
 
---- Check if the Clang formatter is available
+--- Check if the Clang formatter is available (with caching)
 ---@return boolean
 ---@return string|nil error_message
 function ClangFormatter:is_available()
+  -- Return cached result if available
+  if self._availability_cache ~= nil then
+    return self._availability_cache.result, self._availability_cache.error
+  end
+
+  -- Cache the result
+  self._availability_cache = {}
+
   local result = vim.fn.executable("clang-format")
   if result == 0 then
-    return false, "clang-format not found in PATH"
+    self._availability_cache.result = false
+    self._availability_cache.error = "clang-format not found in PATH"
+    return self._availability_cache.result, self._availability_cache.error
   end
-  return true
+
+  self._availability_cache.result = true
+  self._availability_cache.error = nil
+  return self._availability_cache.result, self._availability_cache.error
 end
 
 --- Format C/C++ code using clang-format

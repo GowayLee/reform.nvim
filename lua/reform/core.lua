@@ -3,7 +3,15 @@ local M = {}
 
 local config = require("reform.config")
 local formatters = require("reform.formatters")
-local utils = require("reform.utils")
+
+-- Lazy-loaded utils module
+local utils = nil
+local function get_utils()
+  if not utils then
+    utils = require("reform.utils")
+  end
+  return utils
+end
 
 -- Module state
 local state = {
@@ -17,14 +25,15 @@ function M.format_line(text, filetype)
     return text
   end
 
-  local head, body = utils.parse_line(text)
+  local lutils = get_utils()
+  local head, body = lutils.parse_line(text)
   if body == "" then
     return text
   end
 
-  utils.debug_log("Formatting line for filetype: " .. filetype)
+  lutils.debug_log("Formatting line for filetype: " .. filetype)
 
-  return utils.time_function("format_line", function()
+  return lutils.time_function("format_line", function()
     local formatted_body = formatters.format(body, filetype)
     return head .. formatted_body
   end)
@@ -33,9 +42,10 @@ end
 -- Main formatting function triggered by ENTER
 function M.real_time_format_code()
   local filetype = vim.bo.filetype
+  local lutils = get_utils()
 
   -- Check if we're at the end of a non-empty line
-  if utils.at_line_end() then
+  if lutils.at_line_end() then
     local line = vim.api.nvim_get_current_line()
     local formatted = M.format_line(line, filetype)
 
@@ -44,7 +54,7 @@ function M.real_time_format_code()
     end
 
     -- Store formatted text in module state for the key mapping to use
-    utils.set_buf_var("rtformat_text", formatted)
+    lutils.set_buf_var("rtformat_text", formatted)
 
     local keys = ""
 
@@ -71,52 +81,54 @@ end
 
 -- Handle InsertLeave event for additional formatting
 function M.on_insert_leave()
-  if utils.get_buf_var("rtformat_insert_leave", 0) == 1 then
+  local lutils = get_utils()
+  if lutils.get_buf_var("rtformat_insert_leave", 0) == 1 then
     return
   end
 
-  local mode = utils.get_mode()
+  local mode = lutils.get_mode()
   if mode:match("^i") then
     return
   end
 
   local line = vim.api.nvim_get_current_line()
   local filetype = vim.bo.filetype
-  local head, body = utils.parse_line(line)
+  local head, body = lutils.parse_line(line)
   local formatted_body = formatters.format(body, filetype)
 
   if body == formatted_body then
     return
   end
 
-  utils.debug_log("Formatting on InsertLeave")
+  lutils.debug_log("Formatting on InsertLeave")
 
   -- Handle multiline formatting result
   local formatted_line = head .. formatted_body
-  utils.set_buf_var("rtformat_insert_leave", 1)
+  lutils.set_buf_var("rtformat_insert_leave", 1)
 
   if formatted_body:find("\n") then
-    utils.insert_multiline(formatted_body, true)
+    lutils.insert_multiline(formatted_body, true)
   else
     vim.api.nvim_set_current_line(formatted_line)
   end
 
-  utils.set_buf_var("rtformat_insert_leave", 0)
+  lutils.set_buf_var("rtformat_insert_leave", 0)
 end
 
 -- Check if plugin can be enabled for current buffer
 function M.check_enable()
+  local lutils = get_utils()
   local filetype = vim.bo.filetype
 
   if not filetype or filetype == "" then
-    utils.error_msg("No filetype detected")
+    lutils.error_msg("No filetype detected")
     return false
   end
 
   -- Check if formatter is available
   local available, err = formatters.is_available(filetype)
   if not available then
-    utils.error_msg(err or ("Formatter not available for " .. filetype))
+    lutils.error_msg(err or ("Formatter not available for " .. filetype))
     return false
   end
 
@@ -125,9 +137,10 @@ end
 
 -- Enable RT Format for current buffer
 function M.enable()
+  local lutils = get_utils()
   -- Check is already enabled
-  if utils.get_buf_var("rtf_enable", 0) == 1 then
-    utils.info_msg("is already running in current buffer")
+  if lutils.get_buf_var("rtf_enable", 0) == 1 then
+    lutils.info_msg("is already running in current buffer")
     return false
   end
 
@@ -150,7 +163,7 @@ function M.enable()
 
   -- Set up autocommand for InsertLeave
   if config.get("on_insert_leave") then
-    local group = utils.create_augroup("RTFormatGroup", true)
+    local group = lutils.create_augroup("RTFormatGroup", true)
     vim.api.nvim_create_autocmd("InsertLeave", {
       group = group,
       buffer = 0,
@@ -159,15 +172,16 @@ function M.enable()
     })
   end
 
-  utils.set_buf_var("rtf_enable", 1)
-  utils.info_msg("is enabled in current buffer, exit with :RTFormatDisable")
+  lutils.set_buf_var("rtf_enable", 1)
+  lutils.info_msg("is enabled in current buffer, exit with :RTFormatDisable")
 
   return true
 end
 
 -- Disable RT Format for current buffer
 function M.disable()
-  if utils.get_buf_var("rtf_enable", 0) == 1 then
+  local lutils = get_utils()
+  if lutils.get_buf_var("rtf_enable", 0) == 1 then
     -- local key = state.enable_ctrl_enter and '<C-CR>' or '<CR>'
     -- utils.safe_keymap_del('i', '<CR>', { buffer = true })
 
@@ -176,16 +190,16 @@ function M.disable()
     -- reset <CR> to ensure disable
     vim.keymap.set("i", "<CR>", "<CR>", { buffer = 0, expr = false })
 
-    utils.debug_log("Disabled RTFormat key mapping: <CR>")
+    lutils.debug_log("Disabled RTFormat key mapping: <CR>")
 
     -- Clear autocommands
     vim.api.nvim_clear_autocmds({ group = "RTFormatGroup" })
 
-    utils.set_buf_var("rtf_enable", 0)
-    utils.info_msg("is disabled in current buffer")
+    lutils.set_buf_var("rtf_enable", 0)
+    lutils.info_msg("is disabled in current buffer")
     return true
   end
-  utils.error_msg("is not running in current buffer")
+  lutils.error_msg("is not running in current buffer")
   return true
 end
 
@@ -194,6 +208,8 @@ function M.setup()
   if state.initialized then
     return
   end
+
+  local lutils = get_utils()
 
   -- Create user commands
   vim.api.nvim_create_user_command("RTFormatEnable", M.enable, {
@@ -206,7 +222,7 @@ function M.setup()
 
   -- Auto-enable for configured filetypes
   if config.get("auto_enable").enabled then
-    local auto_group = utils.create_augroup("RTFormatAuto", true)
+    local auto_group = lutils.create_augroup("RTFormatAuto", true)
 
     -- Use multiple events for better coverage
     local events = { "FileType" }
@@ -221,15 +237,15 @@ function M.setup()
           -- Check if formatter is available before auto-enabling
           local available, err = formatters.is_available(filetype)
           if not available then
-            utils.debug_log("Skipping auto-enable for " .. filetype .. ": " .. (err or "formatter not available"))
+            lutils.debug_log("Skipping auto-enable for " .. filetype .. ": " .. (err or "formatter not available"))
             goto continue
           end
           vim.schedule(function()
             -- Check if not already enabled for this buffer
-            if utils.get_buf_var("rtf_enable", 0) ~= 1 then
+            if lutils.get_buf_var("rtf_enable", 0) ~= 1 then
               local success = M.enable()
               if not success then
-                utils.debug_log("Failed to auto-enable for " .. filetype)
+                lutils.debug_log("Failed to auto-enable for " .. filetype)
               end
             end
           end)
@@ -241,15 +257,16 @@ function M.setup()
   end
 
   state.initialized = true
-  utils.debug_log("Core module initialized")
+  lutils.debug_log("Core module initialized")
 end
 
 -- Get current state for debugging
 function M.get_state()
+  local lutils = get_utils()
   return {
     enable_ctrl_enter = state.enable_ctrl_enter,
     initialized = state.initialized,
-    buffer_enabled = utils.get_buf_var("rtf_enable", 0),
+    buffer_enabled = lutils.get_buf_var("rtf_enable", 0),
   }
 end
 

@@ -1,4 +1,4 @@
--- Reform main module
+-- Reform main module (optimized for lazy loading)
 local M = {}
 
 local config = require("reform.config")
@@ -7,7 +7,7 @@ local formatters = require("reform.formatters")
 local utils = require("reform.utils")
 
 -- Module version
-M.version = "0.1.0"
+M.version = "0.1.1"
 
 -- Setup Reform with user configuration
 function M.setup(user_config)
@@ -102,7 +102,15 @@ end
 -- Export base formatter class for custom formatters
 M.BaseFormatter = formatters.BaseFormatter
 
--- Export utilities for custom formatters
-M.utils = utils
+-- Export utilities for custom formatters (lazy loaded)
+M.utils = nil
+setmetatable(M, {
+  __index = function(self, key)
+    if key == "utils" then
+      self.utils = require("reform.utils")
+      return self.utils
+    end
+  end
+})
 
 return M
