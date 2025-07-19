@@ -1,6 +1,5 @@
 -- Formatter implementations for different languages
 local M = {}
-local config = require("reform.config")
 
 -- Import formatter classes (lazy loading)
 local BaseFormatter = require("reform.formatters.base")
@@ -29,13 +28,13 @@ function M.get_formatter(filetype)
   if not class_path then
     return nil
   end
-  
+
   -- Return cached instance or create new one
   if not formatter_instances[filetype] then
     local formatter_class = require(class_path)
     formatter_instances[filetype] = formatter_class:new()
   end
-  
+
   return formatter_instances[filetype]
 end
 
@@ -67,7 +66,5 @@ end
 
 -- Export formatter classes for extension
 M.BaseFormatter = BaseFormatter
-M.PythonFormatter = PythonFormatter
-M.ClangFormatter = ClangFormatter
 
 return M

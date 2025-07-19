@@ -6,8 +6,8 @@ local defaults = {
   -- ctrl_enter = false,     -- Use CTRL+ENTER instead of ENTER
   on_insert_leave = true, -- Enable formatting when leaving insert mode
   auto_enable = {
-    enabled = false, -- Master switch for auto-enable
-    filetypes = { -- Filetypes to auto-enable
+    enabled = false,      -- Master switch for auto-enable
+    filetypes = {         -- Filetypes to auto-enable
       "python",
       "lua",
       "java",

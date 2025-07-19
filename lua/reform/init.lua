@@ -4,6 +4,7 @@ local M = {}
 local config = require("reform.config")
 local core = require("reform.core")
 local formatters = require("reform.formatters")
+local utils = require("reform.utils")
 
 -- Module version
 M.version = "0.1.0"
