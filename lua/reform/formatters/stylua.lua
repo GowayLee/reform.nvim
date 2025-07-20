@@ -43,19 +43,19 @@ end
 ---@return string|nil config_path
 function StyluaFormatter:_find_config()
   local cwd = vim.fn.getcwd()
-  
+
   -- Check cache first
   if self._config_cache[cwd] ~= nil then
     return self._config_cache[cwd]
   end
-  
+
   -- Look for .stylua.toml in project root and parent directories
   local config_path = vim.fn.findfile(".stylua.toml", ".;")
   if config_path == "" then
     -- Also check for stylua.toml (without dot)
     config_path = vim.fn.findfile("stylua.toml", ".;")
   end
-  
+
   -- Cache the result (nil means no config found, string means found)
   self._config_cache[cwd] = config_path ~= "" and config_path or nil
   return self._config_cache[cwd]
@@ -73,20 +73,20 @@ function StyluaFormatter:format(text, filetype)
   -- Get cached config path
   local config_path = self:_find_config()
 
-  -- Build command with proper argument structure
-  local cmd = {"stylua", "-"}
-  if config_path then
-    table.insert(cmd, 2, "--config-path")
-    table.insert(cmd, 3, config_path)
-  end
-  
+  -- Build command with proper argument structure -- FIXME
+  -- local cmd = { "stylua", "-" }
+  -- if config_path then
+  --   table.insert(cmd, 2, "--config-path")
+  --   table.insert(cmd, 3, config_path)
+  -- end
+  local cmd = string.format("stylua --config-path " .. config_path .. " -")
+
   local result = vim.fn.system(cmd, text)
-  
   if vim.v.shell_error ~= 0 then
     vim.notify("Reform: Stylua formatting failed", vim.log.levels.WARN)
     return text
   end
-  
+
   return vim.trim(result)
 end
 
