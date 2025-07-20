@@ -110,6 +110,26 @@ This makes reform.nvim ideal for lazy loading configurations with plugin manager
 - `clang-format` for C family (C, C++).
 - `stylua` for Lua files.
 
+### Stylua Configuration
+
+Stylua automatically detects configuration files in your project:
+
+- **`.stylua.toml`** (recommended)
+- **`stylua.toml`** (alternative)
+
+Configuration files are searched for in:
+- Current working directory
+- Parent directories up to the project root
+- User home directory as fallback
+
+Example `.stylua.toml`:
+```toml
+column_width = 120
+line_endings = "Unix"
+indent_type = "Spaces"
+indent_width = 2
+```
+
 **This project is still under development, please use with caution**
 **Report any bugs or ideas you found in Issue :)**
 

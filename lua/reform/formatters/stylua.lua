@@ -46,15 +46,28 @@ function StyluaFormatter:format(text, filetype)
     return text
   end
 
-  -- Use stylua for formatting via stdin
-  local cmd = "stylua -"
-  
-  local result = vim.fn.system(cmd, text)
-  if vim.v.shell_error == 0 then
-    return vim.trim(result)
+  -- Look for .stylua.toml in project root and parent directories
+  local config_path = vim.fn.findfile(".stylua.toml", ".;")
+  if config_path == "" then
+    -- Also check for stylua.toml (without dot)
+    config_path = vim.fn.findfile("stylua.toml", ".;")
   end
 
-  return text
+  -- Build command with proper argument structure
+  local cmd = {"stylua", "-"}
+  if config_path ~= "" then
+    table.insert(cmd, 2, "--config-path")
+    table.insert(cmd, 3, config_path)
+  end
+  
+  local result = vim.fn.system(cmd, text)
+  
+  if vim.v.shell_error ~= 0 then
+    vim.notify("Reform: Stylua formatting failed", vim.log.levels.WARN)
+    return text
+  end
+  
+  return vim.trim(result)
 end
 
 return StyluaFormatter

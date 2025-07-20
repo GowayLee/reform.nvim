@@ -72,15 +72,35 @@ require('reform').setup({
   formatters = {
     paths = {
       ["ruff"] = vim.fn.stdpath("data") .. "/mason/bin/ruff",
-      ["clang-format"] = vim.fn.stdpath("data") .. "/mason/bin/clang-format"
+      ["clang-format"] = vim.fn.stdpath("data") .. "/mason/bin/clang-format",
+      ["stylua"] = vim.fn.stdpath("data") .. "/mason/bin/stylua"
     },
     languages = {
       python = "ruff",
       c = "clang-format",
-      cpp = "clang-format"
+      cpp = "clang-format",
+      lua = "stylua"
     }
   }
 })
+```
+
+### Stylua Configuration
+
+Stylua supports configuration through TOML files. The formatter will automatically detect:
+
+- `.stylua.toml` in project root
+- `stylua.toml` in project root  
+- Configuration files in parent directories
+
+Example `.stylua.toml`:
+```toml
+column_width = 120
+line_endings = "Unix"
+indent_type = "Spaces"
+indent_width = 2
+quote_style = "AutoPreferDouble"
+call_parentheses = "Always"
 ```
 
 ## Implementation Plan
