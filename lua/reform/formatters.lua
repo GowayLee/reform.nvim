@@ -13,8 +13,8 @@ local formatter_classes = {
   c = "reform.formatters.clang",
   cpp = "reform.formatters.clang",
   ["c++"] = "reform.formatters.clang",
-  -- Legacy support - use Python formatter for other languages
-  lua = "reform.formatters.python",
+  -- Use Stylua for Lua files
+  lua = "reform.formatters.stylua",
   java = "reform.formatters.python",
   javascript = "reform.formatters.python",
   json = "reform.formatters.python",

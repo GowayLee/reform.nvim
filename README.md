@@ -17,6 +17,7 @@ This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-r
 - Nvim with "+python3" feature
 - Python module "autopep8"
 - A `clang-format` executable installed
+- `stylua` executable for Lua formatting
 
 ## Installation
 
@@ -83,7 +84,8 @@ require("reform").setup({
   formatters = {
     python = 'autopep8',
     c = 'clang-format',
-    cpp = 'clang-format'
+    cpp = 'clang-format',
+    lua = 'stylua'
   },
   debug = false
 })
@@ -104,8 +106,29 @@ This makes reform.nvim ideal for lazy loading configurations with plugin manager
 
 `reform.nvim` currently supports the following formatters:
 
-- `autopep8` from Python3, for Python, Lua, Java, JavaScript, JSON, ActionScript, Ruby.
+- `autopep8` from Python3, for Python, Java, JavaScript, JSON, ActionScript, Ruby.
 - `clang-format` for C family (C, C++).
+- `stylua` for Lua files.
+
+### Stylua Configuration
+
+Stylua automatically detects configuration files in your project:
+
+- **`.stylua.toml`** (recommended)
+- **`stylua.toml`** (alternative)
+
+Configuration files are searched for in:
+- Current working directory
+- Parent directories up to the project root
+- User home directory as fallback
+
+Example `.stylua.toml`:
+```toml
+column_width = 120
+line_endings = "Unix"
+indent_type = "Spaces"
+indent_width = 2
+```
 
 **This project is still under development, please use with caution**
 **Report any bugs or ideas you found in Issue :)**

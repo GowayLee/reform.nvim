@@ -25,6 +25,7 @@ local defaults = {
     python = "autopep8",
     c = "clang-format",
     cpp = "clang-format",
+    lua = "stylua",
   },
   debug = false, -- Enable debug info
 }
