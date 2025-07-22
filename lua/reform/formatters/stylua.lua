@@ -2,7 +2,7 @@ local BaseFormatter = require("reform.formatters.base")
 
 ---@class StyluaFormatter : BaseFormatter
 ---@field _availability_cache table|nil
----@field _config_cache table Cache for configuration paths
+---@field _cmd_cache table Cache for generated commands
 local StyluaFormatter = setmetatable({}, { __index = BaseFormatter })
 StyluaFormatter.__index = StyluaFormatter
 
@@ -11,7 +11,7 @@ StyluaFormatter.__index = StyluaFormatter
 function StyluaFormatter:new()
   local instance = setmetatable({}, self)
   instance._availability_cache = nil
-  instance._config_cache = {}
+  instance._cmd_cache = {}
   return instance
 end
 
@@ -39,26 +39,25 @@ function StyluaFormatter:is_available()
   return self._availability_cache.result, self._availability_cache.error
 end
 
---- Find Stylua configuration file with caching
+--- Find Stylua configuration file
 ---@return string|nil config_path
 function StyluaFormatter:_find_config()
-  local cwd = vim.fn.getcwd()
-
-  -- Check cache first
-  if self._config_cache[cwd] ~= nil then
-    return self._config_cache[cwd]
-  end
-
-  -- Look for .stylua.toml in project root and parent directories
   local config_path = vim.fn.findfile(".stylua.toml", ".;")
   if config_path == "" then
-    -- Also check for stylua.toml (without dot)
     config_path = vim.fn.findfile("stylua.toml", ".;")
   end
+  return config_path ~= "" and config_path or nil
+end
 
-  -- Cache the result (nil means no config found, string means found)
-  self._config_cache[cwd] = config_path ~= "" and config_path or nil
-  return self._config_cache[cwd]
+--- Generate the stylua command based on configuration
+---@return string cmd
+function StyluaFormatter:_generate_cmd()
+  local config_path = self:_find_config()
+  if config_path then
+    return string.format("stylua --config-path %s -", config_path)
+  else
+    return "stylua -"
+  end
 end
 
 --- Format Lua code using stylua
@@ -70,16 +69,13 @@ function StyluaFormatter:format(text, filetype)
     return text
   end
 
-  -- Get cached config path
-  local config_path = self:_find_config()
-
-  -- Build command with proper argument structure -- FIXME
-  -- local cmd = { "stylua", "-" }
-  -- if config_path then
-  --   table.insert(cmd, 2, "--config-path")
-  --   table.insert(cmd, 3, config_path)
-  -- end
-  local cmd = string.format("stylua --config-path " .. config_path .. " -")
+  -- Check cache for generated command
+  local cwd = vim.fn.getcwd()
+  local cmd = self._cmd_cache[cwd]
+  if not cmd then
+    cmd = self:_generate_cmd()
+    self._cmd_cache[cwd] = cmd
+  end
 
   local result = vim.fn.system(cmd, text)
   if vim.v.shell_error ~= 0 then
