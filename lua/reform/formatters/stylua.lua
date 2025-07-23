@@ -2,7 +2,6 @@ local BaseFormatter = require("reform.formatters.base")
 
 ---@class StyluaFormatter : BaseFormatter
 ---@field _availability_cache table|nil
----@field _cmd_cache table Cache for generated commands
 local StyluaFormatter = setmetatable({}, { __index = BaseFormatter })
 StyluaFormatter.__index = StyluaFormatter
 
@@ -11,7 +10,6 @@ StyluaFormatter.__index = StyluaFormatter
 function StyluaFormatter:new()
   local instance = setmetatable({}, self)
   instance._availability_cache = nil
-  instance._cmd_cache = {}
   return instance
 end
 
@@ -39,27 +37,6 @@ function StyluaFormatter:is_available()
   return self._availability_cache.result, self._availability_cache.error
 end
 
---- Find Stylua configuration file
----@return string|nil config_path
-function StyluaFormatter:_find_config()
-  local config_path = vim.fn.findfile(".stylua.toml", ".;")
-  if config_path == "" then
-    config_path = vim.fn.findfile("stylua.toml", ".;")
-  end
-  return config_path ~= "" and config_path or nil
-end
-
---- Generate the stylua command based on configuration
----@return string cmd
-function StyluaFormatter:_generate_cmd()
-  local config_path = self:_find_config()
-  if config_path then
-    return string.format("stylua --config-path %s -", config_path)
-  else
-    return "stylua -"
-  end
-end
-
 --- Format Lua code using stylua
 ---@param text string The text to format
 ---@param filetype string|nil The filetype of the text
@@ -68,19 +45,18 @@ function StyluaFormatter:format(text, filetype)
   if text == "" then
     return text
   end
-
-  -- Check cache for generated command
-  local cwd = vim.fn.getcwd()
-  local cmd = self._cmd_cache[cwd]
-  if not cmd then
-    cmd = self:_generate_cmd()
-    self._cmd_cache[cwd] = cmd
-  end
-
-  local result = vim.fn.system(cmd, text)
+  local result = vim.fn.system("stylua -s -", text)
   if vim.v.shell_error ~= 0 then
-    vim.notify("Reform: Stylua formatting failed", vim.log.levels.WARN)
-    return text
+    -- Check if it's a syntax error by examining the output
+    if result:find("error:") or result:find("ParseError") or result:find("unexpected") then
+      -- For syntax errors, we return the original text silently
+      -- This prevents interrupting the user's workflow when they're typing
+      return text
+    else
+      -- For other errors (e.g., configuration issues), show a warning
+      vim.notify("Reform: Stylua formatting failed", vim.log.levels.WARN)
+      return text
+    end
   end
 
   return vim.trim(result)
