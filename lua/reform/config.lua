@@ -6,8 +6,8 @@ local defaults = {
   -- ctrl_enter = false,     -- Use CTRL+ENTER instead of ENTER
   on_insert_leave = true, -- Enable formatting when leaving insert mode
   auto_enable = {
-    enabled = false,      -- Master switch for auto-enable
-    filetypes = {         -- Filetypes to auto-enable
+    enabled = false, -- Master switch for auto-enable
+    filetypes = { -- Filetypes to auto-enable
       "python",
       "lua",
       "java",
@@ -76,14 +76,6 @@ function M.should_auto_enable(filetype)
 
   -- Check if filetype is in auto-enable list
   return M.config.auto_enable.filetypes[filetype] == true
-end
-
--- Add support for new filetype
-function M.add_filetype(filetype, formatter)
-  M.config.auto_enable.filetypes[filetype] = true -- FIXME: Add one more filed
-  if formatter then
-    M.config.formatters[filetype] = formatter
-  end
 end
 
 -- Get formatter for filetype

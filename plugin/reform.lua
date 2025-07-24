@@ -2,11 +2,11 @@
 --
 -- reform.lua - Prettify current line on Enter for NeoVim !!
 --
--- Modular Lua implementation for NeoVim with extensible formatter support
+-- Simplified Lua implementation for NeoVim with built-in formatter support
 --
 -- ======================================================================
 
--- Load the main RTFormat module
+-- Load the main Reform module
 local reform = require("reform")
 
 -- Plugin is automatically initialized by the reform module
@@ -30,9 +30,10 @@ local reform = require("reform")
 -- })
 
 -- The module provides these main functions:
--- reform.enable()     - Enable for current buffer
--- reform.disable()    - Disable for current buffer
--- reform.status()     - Get current status
--- reform.add_filetype(ft, formatter) - Add support for new filetype
+-- reform.setup(config)     - Initialize with custom configuration
+-- reform.enable()          - Enable for current buffer
+-- reform.disable()         - Disable for current buffer
+-- reform.check_formatter() - Check if formatter is available for filetype
+-- reform.status()          - Get current status
 
 return reform

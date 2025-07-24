@@ -38,11 +38,6 @@ function M.get_formatter(filetype)
   return formatter_instances[filetype]
 end
 
--- Register new formatter
-function M.register_formatter(filetype, formatter)
-  formatter_instances[filetype] = formatter
-end
-
 -- Format text using appropriate formatter
 function M.format(text, filetype)
   local formatter = M.get_formatter(filetype)
@@ -63,8 +58,5 @@ function M.is_available(filetype)
 
   return formatter:is_available()
 end
-
--- Export formatter classes for extension
-M.BaseFormatter = BaseFormatter
 
 return M
