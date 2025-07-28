@@ -59,6 +59,7 @@ The plugin can be configured by passing a table to the `setup` function. Here ar
   - **filetypes** (table): List of file types to auto-enable formatting for.
   - **exclude_filetypes** (table): List of file types to exclude from auto-enable.
 - **formatters** (table): Mapping of formatters respect to their executable path.
+- **mason** (boolean, default: `true`): Enable Mason.nvim intergration.
 - **debug** (boolean, default: `false`): Enable debug information for troubleshooting.
 
 ### Configuration Example

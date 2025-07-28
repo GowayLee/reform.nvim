@@ -25,7 +25,8 @@ reform.nvim/
 │       ├── formatters/
 │       │   ├── base.lua
 │       │   ├── clang.lua
-│       │   └── python.lua
+│       │   ├── python.lua
+│       │   └── stylua.lua
 │       ├── init.lua
 │       ├── utils.lua
 │       └── utils/
@@ -33,12 +34,16 @@ reform.nvim/
 │           ├── buffer.lua
 │           ├── init.lua
 │           ├── log.lua
+│           ├── mason.lua
 │           ├── state.lua
 │           ├── system.lua
 │           ├── text.lua
 │           └── validation.lua
-└── plugin/
-    └── reform.lua
+├── plugin/
+│   └── reform.lua
+├── test.cpp
+├── test.lua
+└── test.py
 ```
 
 -   `.gitignore`: Specifies intentionally untracked files to ignore.
@@ -51,6 +56,7 @@ reform.nvim/
 -   `formatters/`: Directory containing individual formatter implementations.
 -   `utils/`: Modularized utility functions for better code organization.
 -   `plugin/reform.lua`: The main entry point for the Neovim plugin, which loads the `reform` module.
+-   `test.cpp`, `test.lua`, `test.py`: Test files for development and testing purposes.
 
 ## 3. Lua Modules
 
@@ -83,6 +89,9 @@ reform.nvim/
 -   `lua/reform/formatters/clang.lua`:
     -   **Purpose**: C/C++ formatter implementation using `clang-format`.
 
+-   `lua/reform/formatters/stylua.lua`:
+    -   **Purpose**: Lua formatter implementation using `stylua` with syntax error handling and command caching.
+
 -   `lua/reform/utils.lua`:
     -   **Purpose**: Legacy utilities module (being refactored into modular components).
     -   **Dependencies**: `vim` (Neovim API).
@@ -94,6 +103,7 @@ reform.nvim/
         -   `buffer.lua`: Buffer manipulation and state management
         -   `init.lua`: Main utilities entry point
         -   `log.lua`: Logging and debugging utilities
+        -   `mason.lua`: Mason.nvim integration for formatter package management
         -   `state.lua`: Plugin state management
         -   `system.lua`: System-level utilities and commands
         -   `text.lua`: Text processing and manipulation
@@ -101,8 +111,10 @@ reform.nvim/
 
 ## 4. Development Guidelines
 
-- When working with lua, Claude needs to maintain well-defined type annotations
+- When working with lua, Claude needs to maintain well-defined type annotations using EmmyDoc annotations (`---@type`, `@param`, `@return`)
 - Follow existing code style and conventions.
 - Use descriptive variable names and function names.
 - Add appropriate error handling and user feedback.
 - Ensure all public API functions are documented.
+- Utilize the modular utils structure for better code organization.
+- Consider Mason.nvim integration when adding new formatters.
