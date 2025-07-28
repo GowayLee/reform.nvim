@@ -3,7 +3,6 @@ local M = {}
 
 -- Default configuration values
 local defaults = {
-  -- ctrl_enter = false,     -- Use CTRL+ENTER instead of ENTER
   on_insert_leave = true, -- Enable formatting when leaving insert mode
   auto_enable = {
     enabled = false, -- Master switch for auto-enable
@@ -20,13 +19,12 @@ local defaults = {
     },
     exclude_filetypes = {}, -- Filetypes to exclude from auto-enable
   },
-  -- Formatters for each language
+  -- Executable paths for formatters (empty = Mason if mason or PATH, DISABLE = disabled)
   formatters = {
-    python = "autopep8",
-    c = "clang-format",
-    cpp = "clang-format",
-    lua = "stylua",
+    stylua = "", -- Lua formatter
+    clang_format = "", -- C/C++ formatter
   },
+  mason = true, -- Enable Mason.nvim integration
   debug = false, -- Enable debug info
 }
 

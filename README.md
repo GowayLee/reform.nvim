@@ -2,7 +2,7 @@
 
 A simple and lightweight Neovim plugin for formatting your code.
 
-This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-rt-format). 
+This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-rt-format).
 
 ## Features
 
@@ -10,13 +10,13 @@ This project is inspired by [vim-rt-format](https://github.com/skywind3000/vim-r
 - Supports different languages and formatters.
 - Configurable and easy to set up.
 - Written in Lua.
-- **Ultra-fast startup** with lazy loading optimization (<1ms startup time).
+- Support both locally installed and [Mason](https://github.com/mason-org/mason.nvim) installed formatters
 
 ## Requirements
 
-- Nvim with "+python3" feature
+- Nvim with "python3" feature
 - Python module "autopep8"
-- A `clang-format` executable installed
+- `clang-format` executable for C family formatting
 - `stylua` executable for Lua formatting
 
 ## Installation
@@ -58,49 +58,42 @@ The plugin can be configured by passing a table to the `setup` function. Here ar
   - **enabled** (boolean, default: `false`): Master switch for auto-enabling formatting.
   - **filetypes** (table): List of file types to auto-enable formatting for.
   - **exclude_filetypes** (table): List of file types to exclude from auto-enable.
-- **formatters** (table): Mapping of file types to their respective formatters.
+- **formatters** (table): Mapping of formatters respect to their executable path.
 - **debug** (boolean, default: `false`): Enable debug information for troubleshooting.
 
 ### Configuration Example
 
 ```lua
 require("reform").setup({
-  on_insert_leave = true,
+  on_insert_leave = true, -- Enable formatting when leaving insert mode
   auto_enable = {
-    enabled = false,
-    filetypes = {
-      'python',
-      'lua',
-      'java',
-      'javascript',
-      'json',
-      'actionscript',
-      'ruby',
-      'c',
-      'cpp'
+    enabled = false, -- Master switch for auto-enable
+    filetypes = { -- Filetypes to auto-enable
+      "python",
+      "lua",
+      "java",
+      "javascript",
+      "json",
+      "actionscript",
+      "ruby",
+      "c",
+      "cpp",
     },
-    exclude_filetypes = {}
+    exclude_filetypes = {}, -- Filetypes to exclude from auto-enable
   },
+  -- Executable paths for formatters (empty = Mason if mason or PATH, DISABLE = disabled)
   formatters = {
-    python = 'autopep8',
-    c = 'clang-format',
-    cpp = 'clang-format',
-    lua = 'stylua'
+    stylua = "", -- Lua formatter
+    clang_format = "", -- C/C++ formatter
   },
-  debug = false
-})
+  mason = true, -- Enable Mason.nvim integration
+  debug = false, -- Enable debug info
+)
 ```
 
-## Performance
+Currently, reform supports `stylua` and `clang-format` for language specific formatting. For other languages, such as Python, Java, JavaScript, reform will use `autopep8` module in `Python3` to perform formatting as a fallback.
 
-Reform.nvim is optimized for **lightning-fast startup** using advanced lazy loading techniques:
-
-- **<1ms startup time** - Formatter availability checks and utility loading are deferred until needed
-- **Lazy formatter instantiation** - Formatters are only loaded when you actually use them
-- **Cached availability checks** - System command checks are cached to avoid repeated overhead
-- **Minimal initial dependencies** - Only essential modules are loaded at startup
-
-This makes reform.nvim ideal for lazy loading configurations with plugin managers like [lazy.nvim](https://github.com/folke/lazy.nvim).
+You do not need to explicitly configure `autopep8`, since it has already been fully implemented by reform. The only thing you needs to do is to ensure your NVim has installed Python3 and Pip has installed autopep8 module.
 
 ## Supported Formatters
 
@@ -110,75 +103,18 @@ This makes reform.nvim ideal for lazy loading configurations with plugin manager
 - `clang-format` for C family (C, C++).
 - `stylua` for Lua files.
 
-### Stylua Configuration
+### Formatter Configuration
 
-Stylua automatically detects configuration files in your project:
+Stylua and clang-format automatically detect configuration files in your project:
 
-- **`.stylua.toml`** (recommended)
-- **`stylua.toml`** (alternative)
+- **`stylua.toml`**
+- **`.clang-format`**
 
 Configuration files are searched for in:
-- Current working directory
+
+- Current working directory (buffer file directory)
 - Parent directories up to the project root
 - User home directory as fallback
 
-Example `.stylua.toml`:
-```toml
-column_width = 120
-line_endings = "Unix"
-indent_type = "Spaces"
-indent_width = 2
-```
-
 **This project is still under development, please use with caution**
 **Report any bugs or ideas you found in Issue :)**
-
-## Todo - Coming Soon ✨
-
-### 🚀 Configurable Formatter Paths - Use Any Formatter
-**Use formatters from Mason, system PATH, or custom locations!** Soon you'll be able to:
-
-```lua
--- Configure formatter paths and language mappings
-require("reform").setup({
-  formatters = {
-    paths = {
-      -- "" = disabled, "PATH" = system PATH, "/path" = custom
-      ["ruff"] = vim.fn.stdpath("data") .. "/mason/bin/ruff",
-      ["black"] = "PATH",
-      ["clang-format"] = "/opt/llvm/bin/clang-format",
-      ["prettier"] = "",
-      ["stylua"] = vim.fn.stdpath("data") .. "/mason/bin/stylua"
-    },
-    languages = {
-      python = "ruff",        -- Use ruff for Python
-      c = "clang-format",     -- Use clang-format for C/C++
-      javascript = "prettier" -- Use prettier for JS
-    }
-  }
-})
-```
-
-**What this means for you:**
-- **Use Mason formatters** - Just point to Mason's bin directory
-- **Use system formatters** - Works with PATH automatically
-- **Use custom builds** - Point to any executable path
-- **Disable unwanted formatters** - Set path to empty string
-- **Zero breaking changes** - Existing setup continues working
-
-**Supported formatters coming:**
-- Python: `ruff`, `black`, `autopep8`
-- C/C++: `clang-format`
-- JavaScript/TypeScript: `prettier`
-- Lua: `stylua`
-
-**Usage preview:**
-```lua
--- Check formatter availability
-:ReformStatus
-
--- Auto-detect Mason installations
-:ReformDetectFormatters
-```
-
-See [docs/formatter-configuration.md](docs/formatter-configuration.md) for complete configuration guide.

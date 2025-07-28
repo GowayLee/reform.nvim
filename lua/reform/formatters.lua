@@ -1,19 +1,15 @@
 -- Formatter implementations for different languages
 local M = {}
 
--- Import formatter classes (lazy loading)
-local BaseFormatter = require("reform.formatters.base")
-
 -- Lazy-loaded formatter instances
 local formatter_instances = {}
 
--- Formatter registry - stores class references instead of instances
+-- Filetype to formatter class mapping (no longer user-configurable)
 local formatter_classes = {
   python = "reform.formatters.python",
   c = "reform.formatters.clang",
   cpp = "reform.formatters.clang",
   ["c++"] = "reform.formatters.clang",
-  -- Use Stylua for Lua files
   lua = "reform.formatters.stylua",
   java = "reform.formatters.python",
   javascript = "reform.formatters.python",
@@ -55,7 +51,6 @@ function M.is_available(filetype)
   if not formatter then
     return false, "No formatter registered for " .. filetype
   end
-
   return formatter:is_available()
 end
 

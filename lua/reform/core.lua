@@ -127,6 +127,7 @@ function M.check_enable()
 
   -- Check if formatter is available
   local available, err = formatters.is_available(filetype)
+  print(available)
   if not available then
     lutils.error_msg(err or ("Formatter not available for " .. filetype))
     return false
@@ -237,7 +238,7 @@ function M.setup()
           -- Check if formatter is available before auto-enabling
           local available, err = formatters.is_available(filetype)
           if not available then
-            lutils.debug_log("Skipping auto-enable for " .. filetype .. ": " .. (err or "formatter not available"))
+            lutils.info_msg("Skipping auto-enable for " .. filetype .. ": " .. (err or "formatter not available"))
             goto continue
           end
           vim.schedule(function()
@@ -245,7 +246,7 @@ function M.setup()
             if lutils.get_buf_var("rtf_enable", 0) ~= 1 then
               local success = M.enable()
               if not success then
-                lutils.debug_log("Failed to auto-enable for " .. filetype)
+                lutils.info_msg("Failed to auto-enable for " .. filetype)
               end
             end
           end)

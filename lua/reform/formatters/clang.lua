@@ -15,6 +15,12 @@ function ClangFormatter:new()
   return instance
 end
 
+--- Get formatter name
+---@return string
+function ClangFormatter:get_name()
+  return "clang_format"
+end
+
 --- Check if the Clang formatter is available (with caching)
 ---@return boolean
 ---@return string|nil error_message
@@ -27,10 +33,10 @@ function ClangFormatter:is_available()
   -- Cache the result
   self._availability_cache = {}
 
-  local result = vim.fn.executable("clang-format")
-  if result == 0 then
+  local executable = self:get_executable()
+  if not executable then
     self._availability_cache.result = false
-    self._availability_cache.error = "clang-format not found in PATH"
+    self._availability_cache.error = "clang-format not found or disabled"
     return self._availability_cache.result, self._availability_cache.error
   end
 
@@ -43,6 +49,11 @@ end
 ---@param filetype string|nil The filetype of the text
 ---@return string cmd
 function ClangFormatter:_generate_cmd(filetype)
+  local executable = self:get_executable()
+  if not executable then
+    return "echo"
+  end
+
   local lang_map = {
     c = "c",
     cpp = "cpp",
@@ -52,7 +63,7 @@ function ClangFormatter:_generate_cmd(filetype)
   local lang = lang_map[filetype] or "cpp"
   local config_path = self:_find_config()
 
-  local cmd = string.format("clang-format --assume-filename=temp.%s", lang)
+  local cmd = string.format('"%s" --assume-filename=temp.%s', executable, lang)
   if config_path then
     cmd = cmd .. string.format(" --style=file:%s", config_path)
   end

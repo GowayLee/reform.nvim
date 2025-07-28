@@ -1,5 +1,7 @@
 .claude/
+.clang-format
 GEMINI.md
 
 test.cpp
 test.py
+test.lua

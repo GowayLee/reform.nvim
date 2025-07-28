@@ -51,6 +51,12 @@ function PythonFormatter:new()
   return instance
 end
 
+--- Get formatter name
+---@return string
+function PythonFormatter:get_name()
+  return "py-autopep8"
+end
+
 --- Check if the Python formatter is available (with caching)
 ---@return boolean
 ---@return string|nil error_message
