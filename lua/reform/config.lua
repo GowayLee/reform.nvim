@@ -63,13 +63,8 @@ function M.should_auto_enable(filetype)
   end
 
   -- Check if filetype is in exclude list
-  if M.config.auto_enable.exclude_filetypes[filetype] then
+  if M.config.auto_enable.exclude_filetypes[filetype] or not M.config.auto_enable.enabled then
     return false
-  end
-
-  -- Check if auto-enable is enabled
-  if M.config.auto_enable.enabled then
-    return true
   end
 
   -- Check if filetype is in auto-enable list
